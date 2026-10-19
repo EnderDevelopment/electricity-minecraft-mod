@@ -1,0 +1,48 @@
+plugins {
+    id 'fabric-loom' version '1.2-SNAPSHOT'
+    id 'maven-publish'
+}
+
+version = project.mod_version
+
+group = project.maven_group
+
+archivesBaseName = project.archives_base_name
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'Fabric'
+        url = 'https://maven.fabricmc.net/'
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+}
+
+loom {
+    minecraftVersion = project.minecraft_version
+    run {
+        version = project.minecraft_version
+        property 'fabricApi', "net.fabricmc.fabric-api:fabric-api:${project.loader_version}"
+    }
+    ide {
+        runConfigs.create("client") {
+            name = "Client"
+            main = "${project.group}.${project.archivesBaseName}.ElectricityMod"
+            vmArgs = [
+                "-Dfabric.dli.config.dir=${project.projectDir}/run",
+                "-Dfabric.dli.env=client"
+            ]
+            args = [
+                "--assetIndex", "1.20",
+                "--assetsDir", "assets",
+                "--resourcePackDir", "resourcepacks"
+            ]
+            jvmArgs = [
+                "-Dfabric.development=true"
+            ]
+        }
+    }
+}
